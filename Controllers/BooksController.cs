@@ -22,32 +22,39 @@ public class BooksController : ControllerBase
 
         return "Livro criado com sucesso!";
     }
+
     [HttpPut]
     public string PutBooks(int id, string title, int year)
     {
-        var searchBook;
+        foreach (var book in books)
+        {
+            if (book.Id == id)
+            {
+                book.ChangeTitle(title);
+                book.ChangeYear(year);
+                return "Livro alterado com sucesso!";
+            }    
+        }
+        return "Livro não existe na lista!";
+    }
+
+    [HttpDelete]
+    public string DeleteBooks(int id) 
+    {
+        Book searchBook = null;
         foreach (var book in books)
         {
             if (book.Id == id)
             {
                 searchBook = book;
-                searchBook.ChangeTitle(title);
-                searchBook.ChangeYear(year);
-                return searchBook;
+                break;
             }
-            else 
-            {
-                return "Livro não existe na lista!";
-            }        
-        }  
-    }
-    [HttpDelete]
-    public string DeleteBooks(int id) 
-    {
-        var searchBook = Convert.ToInt32(Console.ReadLine());
-        foreach(var book in books) 
-        {
-            if (book.Id != searchBook)
         }
+        if (searchBook == null)
+        {
+            return "Livro não existe";
+        }
+            books.Remove(searchBook);
+            return "Livro removido com sucesso!";
     }
-}   
+}
