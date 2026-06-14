@@ -6,7 +6,7 @@ public class Customer
     public int Id { get; private set; }
     public string Name { get; private set; }
     public string Email { get; private set; }
-
+    private static int nextId = 1;
     private Customer()
     {
 
@@ -17,6 +17,7 @@ public class Customer
         Customer customer  = new Customer();
         customer.ChangeName(name);
         customer.ChangeEmail(email);
+        customer.Id = nextId++;
         return customer;
     }
 

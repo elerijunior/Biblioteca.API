@@ -6,6 +6,7 @@ public class Book
     public int Id { get; private set; }
     public string Title { get; private set; }
     public int Year { get; private set; }
+    private static int nextId = 1;
 
     private Book()
     {
@@ -19,7 +20,7 @@ public class Book
 
         book.ChangeTitle(title);
         book.ChangeYear(year);
-
+        book.Id = nextId++;
         return book;
     }
 
