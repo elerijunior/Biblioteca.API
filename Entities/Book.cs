@@ -12,7 +12,6 @@ public class Book
 
     }
 
-
     public static Book Create(string title, int year)
     {
 

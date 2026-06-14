@@ -54,7 +54,8 @@ public class BooksController : ControllerBase
         {
             return "Livro não existe";
         }
-            books.Remove(searchBook);
-            return "Livro removido com sucesso!";
+        
+        books.Remove(searchBook);
+        return "Livro removido com sucesso!";
     }
 }
