@@ -99,15 +99,6 @@ Biblioteca.API
 | PUT    | /api/Customer |
 | DELETE | /api/Customer |
 
-## Próximos passos
-
-* Entity Framework Core
-* SQL Server
-* DbContext
-* Migrations
-* Relacionamentos entre entidades
-* DTOs
-* Persistência em banco de dados
 
 ## Objetivo
 
