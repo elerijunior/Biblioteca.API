@@ -1,5 +1,6 @@
 using Biblioteca.API.Entities;
 using Microsoft.AspNetCore.Mvc;
+using Biblioteca.API.DAO;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -7,6 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 public class AuthorController : ControllerBase
 {
     private static List<Author> authors = new();
+    private readonly AuthorDAO authorDAO;
+
+    public AuthorController(IConfiguration configuration)
+    {
+        string connectionString =
+        configuration.GetConnectionString("DefaultConnection")
+        ?? throw new Exception("Connection String não encontrada.");
+
+        authorDAO = new AuthorDAO(connectionString);
+    }
 
     [HttpGet]
     public List<Author> GetAuthor()
@@ -18,7 +29,7 @@ public class AuthorController : ControllerBase
     public string PostAuthor(string name)
     {
         Author author = Author.Create(name);
-        authors.Add(author);
+        authorDAO.Add(author);
 
         return "Autor adicionado com sucesso!";
     }
