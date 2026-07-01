@@ -7,8 +7,8 @@ using Biblioteca.API.DAO;
 
 public class AuthorController : ControllerBase
 {
-    private static List<Author> authors = new();
     private readonly AuthorDAO authorDAO;
+    private static List<Author> authors = new();
 
     public AuthorController(IConfiguration configuration)
     {
@@ -22,6 +22,8 @@ public class AuthorController : ControllerBase
     [HttpGet]
     public List<Author> GetAuthor()
     {
+        
+        List<Author> authors = authorDAO.GetAll();
         return authors;
     }
 

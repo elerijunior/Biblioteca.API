@@ -4,7 +4,6 @@ public class Author
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
-    private static int nextId = 1;
 
     private Author()
     {
@@ -16,7 +15,6 @@ public class Author
         
         Author author = new Author();
         author.ChangeName(name);
-        author.Id = nextId++;
         return author;
 
     }
@@ -27,5 +25,13 @@ public class Author
             throw new ArgumentException("O nome é obrigatório.");
         }
         Name = name.Trim();
+    }
+
+    public static Author Load(int id, string name)
+    {
+        Author author = new Author();
+        author.Id = id;
+        author.ChangeName(name);
+        return author;
     }
 }
