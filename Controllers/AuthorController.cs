@@ -8,7 +8,6 @@ using Biblioteca.API.DAO;
 public class AuthorController : ControllerBase
 {
     private readonly AuthorDAO authorDAO;
-    private static List<Author> authors = new();
 
     public AuthorController(IConfiguration configuration)
     {
@@ -38,35 +37,24 @@ public class AuthorController : ControllerBase
     [HttpPut]
     public string PutAuthor(int id, string name) 
     {
-        foreach (var author in authors)
+        Author? author = authorDAO.GetById(id);
+        if (author != null)
         {
-            if (author.Id == id)
-            {
-                author.ChangeName(name);
-                return "Autor alterado com sucesso!";
-            }
+            author.ChangeName(name);
+            authorDAO.Update(author);
+            return "Autor Alterado com sucesso!";
         }
         return "Autor não encontado!";
     }
     [HttpDelete]
     public string DeleteAuthor(int id)
     {
-        Author searchAuthor = null;
-        foreach (var author in authors)
+        Author? author = authorDAO.GetById(id);
+        if(author != null)
         {
-            if(author.Id == id) 
-            {
-                searchAuthor = author;
-                break; 
-            }        
+            authorDAO.Delete(id);
+            return "Autor deletado com sucesso!";
         }
-       
-        if (searchAuthor == null)
-        {
-            return "Autor não encontrado!";
-        }
-        
-        authors.Remove(searchAuthor);
-        return "Autor removido com sucesso!";
+        return "Autor não encontrado!";
     }
 }

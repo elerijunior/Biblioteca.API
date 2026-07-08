@@ -1,6 +1,7 @@
 using System.Reflection.Metadata.Ecma335;
 using Biblioteca.API.Entities;
 using Npgsql;
+using Npgsql.Internal;
 
 namespace Biblioteca.API.DAO;
 
@@ -77,5 +78,38 @@ public class AuthorDAO
 				return Author.Load(authorId, name);
 			}
 			return null;
+		}
+
+		public void Update(Author author)
+		{
+			using var connection = new NpgsqlConnection(connectionString);
+
+			connection.Open();
+
+			string sql = @"UPDATE Authors SET Name = @name WHERE Id = @id";
+
+			using var command = new NpgsqlCommand(sql, connection);
+
+			command.Parameters.AddWithValue("@name", author.Name);
+
+			command.Parameters.AddWithValue("@id", author.Id);
+
+			command.ExecuteNonQuery();
+		}
+
+		public void Delete(int id)
+		{
+			using var connection = new NpgsqlConnection(connectionString);
+
+			connection.Open();
+
+			string sql = @"DELETE FROM Authors WHERE Id = @id";
+
+			using var command = new NpgsqlCommand(sql, connection);
+
+			command.Parameters.AddWithValue("@id", id);
+
+			command.ExecuteNonQuery();
+			
 		}
 }
