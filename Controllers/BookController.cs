@@ -1,16 +1,29 @@
-﻿using Biblioteca.API.Entities;
+﻿using Biblioteca.API.DAO;
+using Biblioteca.API.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
 
-public class BooksController : ControllerBase
+public class BookController : ControllerBase
 {
+
+    private readonly BookDAO bookDAO;
     private static List<Book> books = new();
+
+    public BookController(IConfiguration configuration)
+    {
+        string connectionString =
+        configuration.GetConnectionString("DefaultConnection")
+        ?? throw new Exception("Connection String não encontrada.");
+
+        bookDAO = new BookDAO(connectionString);
+    }
 
     [HttpGet]
     public List<Book> GetBooks()
     {
+        List<Book> books = bookDAO.GetAll();
         return books;
     }
 
