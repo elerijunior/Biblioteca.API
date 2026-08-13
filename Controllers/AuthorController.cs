@@ -43,7 +43,7 @@ public class AuthorController : ControllerBase
             return BadRequest();
         }
         _authorDAO.Add(author);
-        return Ok(author);
+        return Created(author);
     }
 
     [HttpPut]
