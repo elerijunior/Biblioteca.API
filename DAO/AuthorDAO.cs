@@ -2,114 +2,116 @@ using System.Reflection.Metadata.Ecma335;
 using Biblioteca.API.Entities;
 using Npgsql;
 using Npgsql.Internal;
+using Biblioteca.API.DAO.Interface;
 
 namespace Biblioteca.API.DAO;
 
-public class AuthorDAO
+public class AuthorDAO : IAuthorDAO
 {
-	private readonly string connectionString;
 
-		public AuthorDAO(string connectionString)
+	private readonly string _connectionString;
+
+	public AuthorDAO(IConfiguration configuration)
+	{
+		_connectionString = configuration.GetConnectionString("DefaultConnection")
+		?? throw new Exception("Connection String não encontrada.");
+	}
+
+
+	public List<Author> GetAll()
+	{
+		List<Author> authors = new();
+
+		using var connection = new NpgsqlConnection(_connectionString);
+
+		connection.Open();
+
+		string sql = @"SELECT Id, Name FROM Authors";
+
+		using var command = new NpgsqlCommand(sql, connection);
+
+		using var reader = command.ExecuteReader();
+
+		while (reader.Read())
 		{
-			this.connectionString = connectionString;
+			int id = reader.GetInt32(0);
+			string name = reader.GetString(1);
+			Author author = new Author(id, name);
+			authors.Add(author);
 		}
 
+		return authors;
+	}
 
-		public List<Author> GetAll()
+
+	public void Add(Author author)
+	{
+		using var connection = new NpgsqlConnection(_connectionString);
+
+		connection.Open();
+
+		string sql = @"INSERT INTO Authors (Name) VALUES (@name)";
+
+		using var command = new NpgsqlCommand(sql, connection);
+
+		command.Parameters.AddWithValue("@name", author.Name);
+
+		command.ExecuteNonQuery();
+	}
+
+	public Author? GetById(int _id)
+	{
+		using var connection = new NpgsqlConnection(_connectionString);
+
+		connection.Open();
+
+		string sql = @"SELECT Id, Name FROM Authors WHERE Id = @id";
+
+		using var command = new NpgsqlCommand(sql, connection);
+
+		command.Parameters.AddWithValue("@id", _id);
+
+		using var reader = command.ExecuteReader();
+
+		if (reader.Read())
 		{
-			List<Author> authors = new();
-
-			using var connection = new NpgsqlConnection(connectionString);
-
-			connection.Open();
-
-			string sql = @"SELECT Id, Name FROM Authors";
-
-			using var command = new NpgsqlCommand(sql, connection);
-
-			using var reader = command.ExecuteReader();
-
-			while (reader.Read())
-			{
-				int id = reader.GetInt32(0);
-				string name = reader.GetString(1);
-				Author author = Author.Load(id, name);
-				authors.Add(author);
-			}
-
-			return authors;
+			int id = reader.GetInt32(0);
+			string name = reader.GetString(1);
+			//return Author.Load(authorId, name);
+			return new Author(id, name);
 		}
+		return null;
+	}
 
+	public void Update(Author author)
+	{
+		using var connection = new NpgsqlConnection(_connectionString);
 
-		public void Add(Author author)
-		{
-			using var connection = new NpgsqlConnection(connectionString);
-			
-			connection.Open();
-			
-			string sql = @"INSERT INTO Authors (Name) VALUES (@name)";
-			
-			using var command = new NpgsqlCommand(sql, connection);
+		connection.Open();
 
-			command.Parameters.AddWithValue("@name", author.Name);
+		string sql = @"UPDATE Authors SET Name = @name WHERE Id = @id";
 
-			command.ExecuteNonQuery();
-		}
+		using var command = new NpgsqlCommand(sql, connection);
 
-		public Author? GetById(int id)
-		{
+		command.Parameters.AddWithValue("@name", author.Name);
 
-			using var connection = new NpgsqlConnection(connectionString);
+		command.Parameters.AddWithValue("@id", author.Id);
 
-			connection.Open();
+		command.ExecuteNonQuery();
+	}
 
-			string sql = @"SELECT Id, Name FROM Authors WHERE Id = @id";
+	public void Delete(int id)
+	{
+		using var connection = new NpgsqlConnection(_connectionString);
 
-			using var command = new NpgsqlCommand(sql, connection);
+		connection.Open();
 
-			command.Parameters.AddWithValue("@id", id);
+		string sql = @"DELETE FROM Authors WHERE Id = @id";
 
-			using var reader = command.ExecuteReader();
+		using var command = new NpgsqlCommand(sql, connection);
 
-			if (reader.Read())
-			{
-			int authorId = reader.GetInt32(0);
-				string name = reader.GetString(1);
-				return Author.Load(authorId, name);
-			}
-			return null;
-		}
+		command.Parameters.AddWithValue("@id", id);
 
-		public void Update(Author author)
-		{
-			using var connection = new NpgsqlConnection(connectionString);
-
-			connection.Open();
-
-			string sql = @"UPDATE Authors SET Name = @name WHERE Id = @id";
-
-			using var command = new NpgsqlCommand(sql, connection);
-
-			command.Parameters.AddWithValue("@name", author.Name);
-
-			command.Parameters.AddWithValue("@id", author.Id);
-
-			command.ExecuteNonQuery();
-		}
-
-		public void Delete(int id)
-		{
-			using var connection = new NpgsqlConnection(connectionString);
-
-			connection.Open();
-
-			string sql = @"DELETE FROM Authors WHERE Id = @id";
-
-			using var command = new NpgsqlCommand(sql, connection);
-
-			command.Parameters.AddWithValue("@id", id);
-
-			command.ExecuteNonQuery();
-			
-		}
+		command.ExecuteNonQuery();
+	}
 }

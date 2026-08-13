@@ -39,4 +39,19 @@ public class BookDAO
 
         return books;
     }
+
+    public void Add(Book book)
+		{
+			using var connection = new NpgsqlConnection(connectionString);
+			
+			connection.Open();
+			
+			string sql = @"INSERT INTO Books (Title) VALUES (@title)";
+			
+			using var command = new NpgsqlCommand(sql, connection);
+
+			command.Parameters.AddWithValue("@title", book.Title);
+
+			command.ExecuteNonQuery();
+		}
 }

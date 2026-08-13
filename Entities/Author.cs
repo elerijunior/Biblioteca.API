@@ -5,19 +5,25 @@ public class Author
     public int Id { get; private set; }
     public string Name { get; private set; }
 
-    private Author()
+    public Author(string name)
     {
-
+        Name = name;
     }
 
-    public static Author Create(string name)
+    public Author(int id, string name)
     {
-        
-        Author author = new Author();
-        author.ChangeName(name);
-        return author;
-
+        Id = id;
+        Name = name;
     }
+
+    // public Author Create(string name)
+    // {
+
+    //     Author author = new Author();
+    //     author.ChangeName(name);
+    //     return author;
+    // }
+
     public void ChangeName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -27,11 +33,11 @@ public class Author
         Name = name.Trim();
     }
 
-    public static Author Load(int id, string name)
-    {
-        Author author = new Author();
-        author.Id = id;
-        author.ChangeName(name);
-        return author;
-    }
+    // public static Author Load(int id, string name)
+    // {
+    //     Author author = new Author();
+    //     author.Id = id;
+    //     author.ChangeName(name);
+    //     return author;
+    // }
 }
