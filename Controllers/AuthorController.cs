@@ -35,16 +35,15 @@ public class AuthorController : ControllerBase
     }
 
     [HttpPost]
-    public string PostAuthor(string name)
+    public IActionResult PostAuthor(string name)
     {
         Author author =  new Author(name);
         if (string.IsNullOrWhiteSpace(name)) 
         {
-            _authorDAO.Add(author);
-            return Ok(author);
+            return BadRequest();
         }
-        return BadRequest();
-        
+        _authorDAO.Add(author);
+        return Ok(author);
     }
 
     [HttpPut]
