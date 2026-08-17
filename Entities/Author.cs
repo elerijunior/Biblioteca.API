@@ -24,6 +24,12 @@ public class Author
     //     return author;
     // }
 
+    public void SetId(int id)
+    {
+        Id = id;
+    }
+
+
     public void ChangeName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))

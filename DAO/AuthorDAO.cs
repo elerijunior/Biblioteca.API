@@ -50,14 +50,15 @@ public class AuthorDAO : IAuthorDAO
 
 		connection.Open();
 
-		string sql = @"INSERT INTO Authors (Name) VALUES (@name)";
+		string sql = @"INSERT INTO Authors (Name) VALUES (@name) RETURNING Id";
 
 		using var command = new NpgsqlCommand(sql, connection);
 
 		command.Parameters.AddWithValue("@name", author.Name);
 
-		command.ExecuteNonQuery();
-	}
+        int id = Convert.ToInt32(command.ExecuteScalar());
+        author.SetId(id);
+    }
 
 	public Author? GetById(int _id)
 	{

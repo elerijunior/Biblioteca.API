@@ -37,13 +37,13 @@ public class AuthorController : ControllerBase
     [HttpPost]
     public IActionResult PostAuthor(string name)
     {
-        Author author =  new Author(name);
         if (string.IsNullOrWhiteSpace(name)) 
         {
             return BadRequest();
         }
+        Author author =  new Author(name);
         _authorDAO.Add(author);
-        return Created(author);
+        return Created("", author);
     }
 
     [HttpPut]
